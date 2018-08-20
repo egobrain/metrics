@@ -1,0 +1,7 @@
+install: "true"
+language: erlang
+sudo: false
+otp_release:
+  - 19.1
+script:
+  - ./rebar3 do xref,eunit,ct,dialyzer

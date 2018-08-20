@@ -1,0 +1,17 @@
+{application, metrics, [
+    {description, "Simple moving average metrics server implementation"},
+    {vsn, git},
+    {registered, []},
+    {mod, { metrics_app, []}},
+    {applications, [
+        kernel,
+        stdlib
+    ]},
+    {env, [
+        {time_span, 60000} %% size of the window in milliseconds
+    ]},
+    {modules, []},
+    {maintainers, ["Yakov Kozlov"]},
+    {licenses, ["MIT"]},
+    {links, []}
+]}.
