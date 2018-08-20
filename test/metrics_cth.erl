@@ -13,5 +13,5 @@ init(_Id, State) ->
 pre_init_per_suite(_SuiteName, Config, State) ->
     {Config, State}.
 
-terminate(State) ->
+terminate(_State) ->
     ok.

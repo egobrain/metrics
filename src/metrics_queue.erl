@@ -40,7 +40,6 @@ push(V, Ts, #window{time_span=TimeSpan, start_ts = StartTs, buff = Buff}=W) ->
       Fun :: fun((value(), Acc) -> Acc).
 foldl(Ts, Fun, Acc, #window{time_span=TimeSpan, buff=Buff, rev_buff=RevBuff}) ->
     MinTs = Ts - TimeSpan,
-    p:t({RevBuff, MinTs}),
     lists:foldr(
         fun ({T, V}, A) when T >= MinTs -> Fun(V, A);
             (_, A) -> A
