@@ -1,16 +1,16 @@
--module(metrics_admin).
+-module(metric_admin).
 
 -behaviour(gen_server).
 
 %% API
 -export([
     start_link/0,
-    get_metrics_srv/1,
-    get_or_start_metrics_srv/1
+    get_metric_srv/1,
+    get_or_start_metric_srv/1
 ]).
 
 -export([
-    monitor/2 %% Used by metrics_srv only
+    monitor/2 %% Used by metric_srv only
 ]).
 
 %% gen_server callbacks
@@ -23,7 +23,7 @@
     code_change/3
 ]).
 
--define(METRICS_TABLE, '$metrics_metrics_table').
+-define(METRICS_TABLE, '$metric_metric_table').
 
 -record(state, {mon_t :: ets:tid()}).
 
@@ -42,21 +42,21 @@ start_link() ->
 monitor(Key, Pid) ->
     gen_server:cast(?MODULE, {monitor, Key, Pid}).
 
--spec get_metrics_srv(Name :: binary()) -> {ok, pid()} | undefined.
-get_metrics_srv(Name) ->
+-spec get_metric_srv(Name :: binary()) -> {ok, pid()} | undefined.
+get_metric_srv(Name) ->
     case ets:lookup(?METRICS_TABLE, Name) of
         [{Name, Pid}] -> {ok, Pid};
         _ -> undefined
     end.
 
--spec get_or_start_metrics_srv(Name :: binary()) -> pid().
-get_or_start_metrics_srv(Name) ->
+-spec get_or_start_metric_srv(Name :: binary()) -> pid().
+get_or_start_metric_srv(Name) ->
     case ets:lookup(?METRICS_TABLE, Name) of
         [{Name, Pid}] -> Pid;
         _ ->
-            case metrics_srv:start(Name, ?METRICS_TABLE) of
+            case metric_srv:start(Name, ?METRICS_TABLE) of
                 {ok, Pid} -> Pid;
-                {error, already_exists} -> get_or_start_metrics_srv(Name)
+                {error, already_exists} -> get_or_start_metric_srv(Name)
             end
     end.
 

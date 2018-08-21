@@ -1,8 +1,8 @@
-{application, metrics, [
+{application, metric, [
     {description, "Simple moving average metrics server implementation"},
     {vsn, git},
     {registered, []},
-    {mod, { metrics_app, []}},
+    {mod, { metric_app, []}},
     {applications, [
         kernel,
         stdlib

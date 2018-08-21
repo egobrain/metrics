@@ -1,4 +1,4 @@
--module(metrics_queue).
+-module(metric_queue).
 
 -export([
     new/1,

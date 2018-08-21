@@ -1,4 +1,4 @@
--module(metrics_SUITE).
+-module(metric_SUITE).
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -31,35 +31,35 @@ all() ->
     ].
 
 unknown_metric_test(_Config) ->
-    ?assertEqual(0.0, metrics_app:average(<<"unknown">>)).
+    ?assertEqual(0.0, metric_app:average(<<"unknown">>)).
 
 average_test(_Config) ->
-    metrics_app:report(<<"a">>, 1.0),
-    metrics_app:report(<<"b">>, 6.0),
-    metrics_app:report(<<"a">>, 3.0),
-    ?assertEqual(2.0, metrics_app:average(<<"a">>)),
-    ?assertEqual(6.0, metrics_app:average(<<"b">>)).
+    metric_app:report(<<"a">>, 1.0),
+    metric_app:report(<<"b">>, 6.0),
+    metric_app:report(<<"a">>, 3.0),
+    ?assertEqual(2.0, metric_app:average(<<"a">>)),
+    ?assertEqual(6.0, metric_app:average(<<"b">>)).
 
 window_test(_Config) ->
     M = <<"window_test">>,
 
-    meck:expect(metrics_srv, timestamp, fun() -> 0 end),
-    metrics_app:report(M, 1.0),
+    meck:expect(metric_srv, timestamp, fun() -> 0 end),
+    metric_app:report(M, 1.0),
     timer:sleep(10),
 
-    meck:expect(metrics_srv, timestamp, fun() -> 30000 end),
-    metrics_app:report(M, 3.0),
+    meck:expect(metric_srv, timestamp, fun() -> 30000 end),
+    metric_app:report(M, 3.0),
     timer:sleep(10),
 
-    meck:expect(metrics_srv, timestamp, fun() -> 50000 end),
-    metrics_app:report(M, 5.0),
+    meck:expect(metric_srv, timestamp, fun() -> 50000 end),
+    metric_app:report(M, 5.0),
     timer:sleep(10),
 
-    meck:expect(metrics_srv, timestamp, fun() -> 60000 end),
-    ?assertEqual(3.0, metrics_app:average(M)),
-    meck:expect(metrics_srv, timestamp, fun() -> 70000 end),
-    ?assertEqual(4.0, metrics_app:average(M)),
-    meck:delete(metrics_srv, timestamp, 0).
+    meck:expect(metric_srv, timestamp, fun() -> 60000 end),
+    ?assertEqual(3.0, metric_app:average(M)),
+    meck:expect(metric_srv, timestamp, fun() -> 70000 end),
+    ?assertEqual(4.0, metric_app:average(M)),
+    meck:delete(metric_srv, timestamp, 0).
 
 load_test(_Config) ->
     Threads = 10000,
@@ -72,7 +72,7 @@ load_test(_Config) ->
             Name = thread_name(I),
             Diff = I*1.0,
             lists:foreach(fun(N) ->
-                metrics_app:report(Name, N+Diff),
+                metric_app:report(Name, N+Diff),
                 timer:sleep(SleepTimeout)
             end, lists:seq(1, Msgs)),
             Self ! {ack, AckRef}
@@ -86,8 +86,8 @@ load_test(_Config) ->
         end
     end, lists:seq(1, Threads)),
 
-    ?assertEqual(6.5, metrics_app:average(thread_name(1))),
-    ?assertEqual(7.5, metrics_app:average(thread_name(2))).
+    ?assertEqual(6.5, metric_app:average(thread_name(1))),
+    ?assertEqual(7.5, metric_app:average(thread_name(2))).
 
 
 thread_name(I) ->

@@ -1,4 +1,4 @@
--module(metrics_sup).
+-module(metric_sup).
 -behaviour(supervisor).
 
 %% API
@@ -22,7 +22,7 @@ start_link() ->
 
 init([]) ->
     {ok, { {one_for_all, 100, 10}, [
-        ?CHILD(metrics_admin, worker)
+        ?CHILD(metric_admin, worker)
     ]} }.
 
 %%====================================================================

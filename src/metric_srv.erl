@@ -1,4 +1,4 @@
--module(metrics_srv).
+-module(metric_srv).
 
 -behaviour(gen_server).
 
@@ -53,15 +53,15 @@ report(Pid, V) ->
 init([Name, NamesT]) ->
     case ets:insert_new(NamesT, {Name, self()}) of
         true ->
-            {ok, TimeSpan} = application:get_env(metrics, time_span),
-            ok = metrics_admin:monitor(Name, self()),
-            {ok, metrics_queue:new(TimeSpan)};
+            {ok, TimeSpan} = application:get_env(metric, time_span),
+            ok = metric_admin:monitor(Name, self()),
+            {ok, metric_queue:new(TimeSpan)};
         false ->
             {stop, already_exists}
     end.
 
 handle_call(get, _From, Queue) ->
-    {Total, Cnt} = metrics_queue:foldl(?TIMESTAMP, fun(V, {Total, Cnt}) ->
+    {Total, Cnt} = metric_queue:foldl(?TIMESTAMP, fun(V, {Total, Cnt}) ->
         {Total + V, Cnt + 1}
     end, {0,0}, Queue),
     Avg = case Cnt of
@@ -73,7 +73,7 @@ handle_call(_Request, _From, State) ->
     {reply, {error, unknown_request}, State}.
 
 handle_cast({report, V}, Queue) ->
-    {noreply, metrics_queue:push(V, ?TIMESTAMP, Queue)};
+    {noreply, metric_queue:push(V, ?TIMESTAMP, Queue)};
 handle_cast(_, Queue) ->
     {noreply, Queue}.
 

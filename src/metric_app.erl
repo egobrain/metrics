@@ -1,4 +1,4 @@
--module(metrics_app).
+-module(metric_app).
 
 -behaviour(application).
 
@@ -19,7 +19,7 @@
 %% =============================================================================
 
 start(_StartType, _StartArgs) ->
-    metrics_sup:start_link().
+    metric_sup:start_link().
 
 stop(_State) ->
     ok.
@@ -30,14 +30,14 @@ stop(_State) ->
 
 -spec report(MetricName :: binary(), MetricValue :: float()) -> ok.
 report(Name, Value) ->
-    Pid = metrics_admin:get_or_start_metrics_srv(Name),
-    metrics_srv:report(Pid, Value).
+    Pid = metric_admin:get_or_start_metric_srv(Name),
+    metric_srv:report(Pid, Value).
 
 -spec average(MetricName :: binary()) -> float().
 average(Name) ->
-    case metrics_admin:get_metrics_srv(Name) of
+    case metric_admin:get_metric_srv(Name) of
         {ok, Pid} ->
-            {ok, Avg} = metrics_srv:get_average(Pid),
+            {ok, Avg} = metric_srv:get_average(Pid),
             Avg;
         undefined -> 0.0
     end.

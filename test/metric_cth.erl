@@ -1,4 +1,4 @@
--module(metrics_cth).
+-module(metric_cth).
 
 -export([
     init/2,
@@ -7,7 +7,7 @@
 ]).
 
 init(_Id, State) ->
-    application:ensure_all_started(metrics),
+    application:ensure_all_started(metric),
     State.
 
 pre_init_per_suite(_SuiteName, Config, State) ->
